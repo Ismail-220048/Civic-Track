@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CitizenConnect - Report Issue</title>
+
+<link rel="stylesheet" href="submit-compilaint.css">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+
+<body>
+    <!-- TOP NAVBAR -->
+
+<div class="topbar">
+
+<div class="logo">CitizenConnect</div>
+
+<div class="menu">
+<a href="#">Dashboard</a>
+<a href="#">My Complaints</a>
+</div>
+
+<div class="user">
+<span id="topUser">Citizen</span>
+</div>
+
+</div>
+
+<div class="dashboard-container">
+<!-- LEFT SIDEBAR -->
+<div class="sidebar">
+
+<h3>Menu</h3>
+
+<ul>
+<li>Dashboard</li>
+<li>My Complaints</li>
+<li>Track Complaint</li>
+</ul>
+
+</div>
+<div class="content">
+<div class="content-layout">
+
+<!-- LEFT SIDE -->
+
+<div class="main-form">
+    <h2 class="welcome">Welcome, <span id="citizenName">Citizen</span></h2>
+
+<div class="card">
+
+<h2>Report a Local Issue</h2>
+
+<form id="complaintForm">
+
+<div class="form-layout">
+
+<div class="form-left">
+
+<label>Complaint Title</label>
+<input type="text" placeholder="Enter your complaint" required>
+
+<label>Name</label>
+<input type="text"  id="nameInput" placeholder="Enter your name" required>
+
+<label>Email</label>
+<input type="email" placeholder="Enter your email" required>
+
+<label>Complaint Category</label>
+<select>
+<option>Road Issue</option>
+<option>Garbage</option>
+<option>Street Light</option>
+</select>
+
+<label>Description</label>
+<textarea required></textarea>
+
+<button type="submit">Submit Complaint</button>
+
+</div>
+
+
+<div class="form-right">
+
+<label>Upload Image</label>
+<input type="file" id="imageUpload">
+
+<img id="preview" style="display:none; width:100%; margin-top:10px;">
+
+<label>Select Problem Location</label>
+
+<div id="map"></div>
+
+<input type="text" id="latitude" placeholder="Latitude" readonly>
+<input type="text" id="longitude" placeholder="Longitude" readonly>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- RIGHT SIDE PANEL -->
+
+<div class="dashboard-panel">
+
+<div class="track-card">
+
+<h3>Track Complaint</h3>
+
+<input type="text" placeholder="Enter Complaint ID">
+
+<button class="track-btn">Track</button>
+
+</div>
+
+
+<div class="stats-card">
+
+<h3>Active Complaints Overview</h3>
+
+<div class="stats">
+
+<div class="stat-box blue">24<br><span>My complaints</span></div>
+
+<div class="stat-box orange">56<br><span>Under review</span></div>
+
+<div class="stat-box red">32<br><span>In progress</span></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+const nameInput = document.getElementById("nameInput");
+const citizenName = document.getElementById("citizenName");
+const topUser = document.getElementById("topUser");
+
+nameInput.addEventListener("input", function(){
+    if(nameInput.value.trim() !== ""){
+        citizenName.textContent = nameInput.value;
+        topUser.textContent = nameInput.value;
+    } else {
+        citizenName.textContent = "Citizen";
+        topUser.textContent = "Citizen";
+    }
+});
+
+document.getElementById("complaintForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    alert("Complaint submitted successfully!");
+    this.reset();
+});
+
+/* Image preview */
+
+document.getElementById("imageUpload").addEventListener("change", function(event){
+
+const file = event.target.files[0];
+const preview = document.getElementById("preview");
+
+if(file){
+preview.src = URL.createObjectURL(file);
+preview.style.display = "block";
+}
+
+});
+
+
+/* Map */
+
+var map = L.map('map').setView([7.8731,80.7718],7);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+attribution:'OpenStreetMap'
+}).addTo(map);
+
+var marker;
+
+map.on('click', function(e){
+
+if(marker){
+map.removeLayer(marker);
+}
+
+marker = L.marker(e.latlng).addTo(map);
+
+document.getElementById("latitude").value = e.latlng.lat;
+document.getElementById("longitude").value = e.latlng.lng;
+
+});
+
+</script>
+</body>
+</html>
