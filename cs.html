@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>My Complaints</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>CitizenConnect</h2>
+
+<a href="#">Dashboard</a>
+<a href="#">Submit Complaint</a>
+<a href="#">My Complaints</a>
+<a href="#">Track Complaint</a>
+<a href="#">Settings</a>
+
+</div>
+
+
+<!-- Main Section -->
+
+<div class="main">
+
+<div class="top-bar">
+
+<h1>My Complaints</h1>
+
+<div class="search-box">
+
+<i class="fa fa-search"></i>
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search Complaint ID..."
+onkeyup="searchComplaint()"
+>
+
+</div>
+
+</div>
+
+
+<!-- Statistics -->
+
+<div class="stats">
+
+<div class="card total">
+<h2>12</h2>
+<p>Total Complaints</p>
+</div>
+
+<div class="card pending">
+<h2>4</h2>
+<p>Pending</p>
+</div>
+
+<div class="card progress">
+<h2>5</h2>
+<p>In Progress</p>
+</div>
+
+<div class="card resolved">
+<h2>3</h2>
+<p>Resolved</p>
+</div>
+
+</div>
+
+
+<!-- Complaints -->
+
+<div class="complaints">
+
+
+<div class="complaint-card">
+
+<p><b>Complaint ID:</b> CC1023</p>
+<p><b>Title:</b> Street Light Not Working</p>
+<p><b>Location:</b> Vijayawada</p>
+<p><b>Date:</b> 03 March 2026</p>
+
+<span class="status progress-status">In Progress</span>
+
+<p class="proof">Proof Image</p>
+
+<img src="images/streetlight.jpg">
+
+<button>Track Complaint</button>
+
+</div>
+
+
+
+<div class="complaint-card">
+
+<p><b>Complaint ID:</b> CC1024</p>
+<p><b>Title:</b> Garbage Overflow</p>
+<p><b>Location:</b> Guntur</p>
+<p><b>Date:</b> 05 March 2026</p>
+
+<span class="status pending-status">Pending</span>
+
+<p class="proof">Proof Image</p>
+
+<img src="images/garbage.jpg">
+
+<button>Track Complaint</button>
+
+</div>
+
+
+
+<div class="complaint-card">
+
+<p><b>Complaint ID:</b> CC1025</p>
+<p><b>Title:</b> Water Leakage</p>
+<p><b>Location:</b> Hyderabad</p>
+<p><b>Date:</b> 06 March 2026</p>
+
+<span class="status resolved-status">Resolved</span>
+
+<p class="proof">Proof Image</p>
+
+<img src="images/waterleak.jpg">
+
+<button>Track Complaint</button>
+
+</div>
+
+
+</div>
+
+</div>
+
+<script src="script1.js"></script>
+
+</body>
+</html>
