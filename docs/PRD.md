@@ -12,7 +12,6 @@ CivicTrack is a digital platform that allows citizens to report civic issues suc
 
 The platform improves transparency, accountability, and communication between citizens and government departments.
 
----
 
 # 2. Problem Statement
 
