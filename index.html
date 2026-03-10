@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitizenConnect Officer Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved"></i> CitizenConnect Admin
+            </div>
+            <nav class="top-menu">
+                <a href="index.html" class="active"><i class="fa-solid fa-briefcase"></i> Dashboard</a>
+                <a href="complaints.html"><i class="fa-solid fa-users"></i> Manage Complaints</a>
+                <a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+            </nav>
+            <div class="top-right">
+                <span class="time" id="currentTime"><i class="fa-regular fa-clock"></i> Loading...</span>
+                <div class="user-profile-sm" id="topNavProfile">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" id="navPhoto">
+                    <span class="name" id="navName">Officer <i class="fa-solid fa-caret-down"></i></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="user-profile-lg">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" id="sidePhoto">
+                    <div class="user-info">
+                        <h3 id="sideName">Loading...</h3>
+                        <p id="sideId">ID: Loading...</p>
+                    </div>
+                </div>
+                <nav class="side-menu">
+                    <a href="index.html" class="active"><i class="fa-solid fa-briefcase"></i> Dashboard</a>
+                    <a href="complaints.html"><i class="fa-solid fa-users"></i> Manage Complaints</a>
+                    <a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+                    <a href="workflow.html"><i class="fa-solid fa-clipboard-check"></i> Officer Workflow</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <div class="welcome-section">
+                    <h1 id="welcomeText">Welcome, Officer!</h1>
+                    <a href="complaints.html" style="text-decoration:none;"><button class="btn-manage"><i class="fa-solid fa-lock"></i> Manage Complaints</button></a>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card new-complaints">
+                        <div class="stat-content">
+                            <h2 id="statNew">...</h2>
+                            <p>New Complaints</p>
+                        </div>
+                        <i class="fa-solid fa-map"></i>
+                    </div>
+                    <div class="stat-card in-progress">
+                        <div class="stat-content">
+                            <h2 id="statProgress">...</h2>
+                            <p>In Progress</p>
+                        </div>
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="stat-card overdue">
+                        <div class="stat-content">
+                            <h2 id="statOverdue">...</h2>
+                            <p>Overdue</p>
+                        </div>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="stat-card resolved">
+                        <div class="stat-content">
+                            <h2 id="statResolved">...</h2>
+                            <p>Resolved</p>
+                        </div>
+                        <div class="progress-bar-container">
+                             <div class="progress-bar" id="statProgressBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Left Column -->
+                    <div class="left-column">
+                        <!-- Overview Map Card -->
+                        <div class="card map-card">
+                            <div class="card-header">
+                                <h3>Assignments Overview</h3>
+                                <div class="dots"><i class="fa-solid fa-ellipsis"></i></div>
+                            </div>
+                            <div id="main-map" class="map-container"></div>
+                            <div class="map-footer" id="mapFooterArea">
+                                <div><i class="fa-solid fa-location-dot"></i> Your District</div>
+                            </div>
+                        </div>
+
+                        <!-- Active Complaints List -->
+                        <div class="card active-list-card">
+                            <div class="card-header">
+                                <h3>Recent Assigned Complaints</h3>
+                                <a href="complaints.html"><button class="btn-outline">View All <i class="fa-solid fa-chevron-down"></i></button></a>
+                            </div>
+                            <div class="complaints-list" id="complaints-list">
+                                <div class="complaint-item"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="right-column">
+                        <!-- Setup Quick Snapshot -->
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>My Resolution Performance</h3>
+                            </div>
+                            <div class="canvas-container" style="height: 200px;">
+                                <canvas id="dashboardChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Officer Performance Quick View -->
+                        <div class="card performance-card">
+                             <div class="card-header">
+                                <h3>Workflow Upcoming</h3>
+                                <a href="workflow.html" class="date-range">View Full</a>
+                             </div>
+                             <div class="complaints-list mt-15" id="mini-workflow-list">
+                                <!-- Populated dynamically -->
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

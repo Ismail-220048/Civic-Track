@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Complaints - CitizenConnect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="logo"><i class="fa-solid fa-shield-halved"></i> CitizenConnect Admin</div>
+            <nav class="top-menu">
+                <a href="index.html"><i class="fa-solid fa-briefcase"></i> Dashboard</a>
+                <a href="complaints.html" class="active"><i class="fa-solid fa-users"></i> Manage Complaints</a>
+                <a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+            </nav>
+            <div class="top-right">
+                <span class="time" id="currentTime"><i class="fa-regular fa-clock"></i> ...</span>
+                <div class="user-profile-sm"><img src="https://i.pravatar.cc/150" alt="Profile" id="navPhoto"></div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="user-profile-lg">
+                    <img src="https://i.pravatar.cc/150" alt="Profile" id="sidePhoto">
+                    <div class="user-info">
+                        <h3 id="sideName">Officer</h3>
+                        <p id="sideId">ID: ...</p>
+                    </div>
+                </div>
+                <nav class="side-menu">
+                    <a href="index.html"><i class="fa-solid fa-briefcase"></i> Dashboard</a>
+                    <a href="complaints.html" class="active"><i class="fa-solid fa-users"></i> Manage Complaints</a>
+                    <a href="analytics.html"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+                    <a href="workflow.html"><i class="fa-solid fa-clipboard-check"></i> Officer Workflow</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="content-area">
+                <div class="welcome-section" style="margin-bottom: 20px;">
+                    <h1>Manage Assigned Complaints</h1>
+                    <p style="color: #94a3b8; font-size:0.95rem;">Review, process, and resolve active issues in your queue.</p>
+                </div>
+
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div class="card-header" style="padding: 20px 20px 0 20px;">
+                        <h3>All Complaints</h3>
+                        <div class="tabs" style="margin-bottom:0; border-bottom:none;">
+                            <span class="tab active" data-filter="All">All</span>
+                            <span class="tab" data-filter="New">New</span>
+                            <span class="tab" data-filter="In Progress">In Progress</span>
+                            <span class="tab" data-filter="Overdue">Overdue</span>
+                        </div>
+                    </div>
+                    
+                    <div class="data-table-wrapper">
+                        <table class="data-table" id="complaintsTable">
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID & Details</th>
+                                    <th>Location</th>
+                                    <th>Received / Age</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="complaintsTableBody">
+                                <!-- Populated dynamically via JS -->
+                                <tr><td colspan="5" style="text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
