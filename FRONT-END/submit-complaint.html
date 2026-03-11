@@ -84,8 +84,8 @@
 
 <div class="form-right">
 
-<label>Upload Image</label>
-<input type="file" id="imageUpload">
+<label>Take or Upload Image</label>
+<input type="file" id="imageUpload" accept="image/*" capture="environment">
 
 <img id="preview" style="display:none; width:100%; margin-top:10px;">
 
@@ -107,43 +107,11 @@
 </div>
 
 
-<!-- RIGHT SIDE PANEL -->
-
-<div class="dashboard-panel">
-
-<div class="track-card">
-
-<h3>Track Complaint</h3>
-
-<input type="text" placeholder="Enter Complaint ID">
-
-<button class="track-btn">Track</button>
-
-</div>
-
-
-<div class="stats-card">
-
-<h3>Active Complaints Overview</h3>
-
-<div class="stats">
-
-<div class="stat-box blue">24<br><span>My complaints</span></div>
-
-<div class="stat-box orange">56<br><span>Under review</span></div>
-
-<div class="stat-box red">32<br><span>In progress</span></div>
-
-</div>
-
-</div>
-
-</div>
-
 </div>
 
 </div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
 
 <script>
 
@@ -160,11 +128,27 @@ nameInput.addEventListener("input", function(){
         topUser.textContent = "Citizen";
     }
 });
-
 document.getElementById("complaintForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    alert("Complaint submitted successfully!");
-    this.reset();
+e.preventDefault();
+
+/* Generate Complaint ID */
+
+var year = new Date().getFullYear();
+var random = Math.floor(1000 + Math.random() * 9000);
+var complaintID = "CC-" + year + "-" + random;
+
+/* Show success message */
+
+alert("Complaint submitted successfully!\nComplaint ID: " + complaintID);
+
+/* Reset form */
+
+document.getElementById("preview").style.display = "none";
+if(marker){
+    map.removeLayer(marker);
+}
+this.reset();
+
 });
 
 /* Image preview */
@@ -172,11 +156,58 @@ document.getElementById("complaintForm").addEventListener("submit", function(e){
 document.getElementById("imageUpload").addEventListener("change", function(event){
 
 const file = event.target.files[0];
+if(file.size > 5 * 1024 * 1024){
+alert("Image size should be less than 5MB");
+return;
+}
 const preview = document.getElementById("preview");
 
 if(file){
+
 preview.src = URL.createObjectURL(file);
 preview.style.display = "block";
+
+/* Read GPS data from image */
+
+EXIF.getData(preview, function(){
+
+var lat = EXIF.getTag(this, "GPSLatitude");
+var lon = EXIF.getTag(this, "GPSLongitude");
+var latRef = EXIF.getTag(this, "GPSLatitudeRef");
+var lonRef = EXIF.getTag(this, "GPSLongitudeRef");
+
+if(lat && lon){
+
+function convertDMSToDD(dms, ref){
+var dd = dms[0] + dms[1]/60 + dms[2]/3600;
+if(ref === "S" || ref === "W"){
+dd = dd * -1;
+}
+return dd;
+}
+
+var latitude = convertDMSToDD(lat, latRef);
+var longitude = convertDMSToDD(lon, lonRef);
+
+/* Move map to image location */
+
+map.setView([latitude, longitude], 15);
+
+if(marker){
+map.removeLayer(marker);
+}
+
+marker = L.marker([latitude, longitude]).addTo(map);
+
+document.getElementById("latitude").value = latitude;
+document.getElementById("longitude").value = longitude;
+
+}else{
+alert("Location data not found in image");
+}
+
+});
+
 }
 
 });
@@ -184,13 +215,28 @@ preview.style.display = "block";
 
 /* Map */
 
-var map = L.map('map').setView([7.8731,80.7718],7);
+var map = L.map('map').setView([20.5937,78.9629],5);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 attribution:'OpenStreetMap'
 }).addTo(map);
-
 var marker;
+navigator.geolocation.getCurrentPosition(function(position){
+
+var lat = position.coords.latitude;
+var lon = position.coords.longitude;
+
+map.setView([lat, lon], 15);
+
+marker = L.marker([lat, lon]).addTo(map);
+
+document.getElementById("latitude").value = lat;
+document.getElementById("longitude").value = lon;
+
+}, function(){
+console.log("Location permission denied");
+});
+
 
 map.on('click', function(e){
 
