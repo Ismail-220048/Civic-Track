@@ -1,158 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
-
 <meta charset="UTF-8">
-<title>User Dashboard - CitizenConnect</title>
-
-<link rel="stylesheet" href="user-Dashboard.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CitizenConnect Dashboard</title>
+<link rel="stylesheet" href="user-dashboard.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
-<!-- Sidebar -->
+<!-- MOBILE OVERLAY -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
 
-<div class="sidebar">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-wrap">
+      <div class="logo-icon"><i class="fa fa-city"></i></div>
+      <h2>CitizenConnect</h2>
+    </div>
+    <button class="sidebar-close" onclick="closeSidebar()"><i class="fa fa-times"></i></button>
+  </div>
 
-<h2>CitizenConnect</h2>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-link active" onclick="showSection('dashboard',this)">
+      <i class="fa fa-chart-pie"></i><span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-link" onclick="showSection('submit',this)">
+      <i class="fa fa-plus-circle"></i><span>Submit Complaint</span>
+    </a>
+    <a href="#" class="nav-link" onclick="showSection('complaints',this)">
+      <i class="fa fa-list-alt"></i><span>My Complaints</span>
+    </a>
+    <a href="#" class="nav-link" onclick="showSection('profile',this)">
+      <i class="fa fa-user-circle"></i><span>Profile</span>
+    </a>
+  </nav>
 
-<a href="#" onclick="showSection('dashboard')">Dashboard</a>
-<a href="#" onclick="showSection('submit')">Submit Complaint</a>
-<a href="#" onclick="showSection('complaints')">My Complaints</a>
+  <div class="sidebar-footer">
+    <div class="theme-toggle" onclick="toggleDarkMode()">
+      <span class="theme-label" id="themeLabel"><i class="fa fa-moon"></i> Dark Mode</span>
+      <div class="toggle-track">
+        <div class="toggle-thumb" id="toggleThumb"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="mainContent">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="openSidebar()"><i class="fa fa-bars"></i></button>
+      <h1 id="pageTitle">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <!-- NOTIFICATION BELL -->
+      <div class="notif-wrap" id="notifWrap">
+        <button class="icon-btn" onclick="toggleNotifications()">
+          <i class="fa fa-bell"></i>
+          <span class="badge" id="notifBadge">3</span>
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-header">
+            <span>Notifications</span>
+            <button onclick="clearNotifications()">Clear all</button>
+          </div>
+          <div class="notif-list" id="notifList">
+            <div class="notif-item unread">
+              <i class="fa fa-check-circle" style="color:#22c55e"></i>
+              <div><p>CC1023 has been resolved</p><small>2 hours ago</small></div>
+            </div>
+            <div class="notif-item unread">
+              <i class="fa fa-tools" style="color:#3b82f6"></i>
+              <div><p>CC1024 is now In Progress</p><small>5 hours ago</small></div>
+            </div>
+            <div class="notif-item unread">
+              <i class="fa fa-exclamation-circle" style="color:#f59e0b"></i>
+              <div><p>New complaint submitted: CC1025</p><small>1 day ago</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVATAR -->
+      <div class="avatar-wrap" onclick="showSection('profile',null)">
+        <div class="avatar" id="topAvatar">RK</div>
+        <span id="topUser">Ravi Kumar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD SECTION ===================== -->
+  <div id="dashboard" class="section active">
+
+    <div class="stats">
+      <div class="card total" onclick="filterByStatus('all')">
+        <div class="card-icon"><i class="fa fa-layer-group"></i></div>
+        <div class="card-info">
+          <h2 class="counter" data-target="12">0</h2>
+          <p>Total Complaints</p>
+        </div>
+      </div>
+      <div class="card pending" onclick="filterByStatus('Pending')">
+        <div class="card-icon"><i class="fa fa-clock"></i></div>
+        <div class="card-info">
+          <h2 class="counter" data-target="4">0</h2>
+          <p>Pending</p>
+        </div>
+      </div>
+      <div class="card progress" onclick="filterByStatus('In Progress')">
+        <div class="card-icon"><i class="fa fa-spinner"></i></div>
+        <div class="card-info">
+          <h2 class="counter" data-target="5">0</h2>
+          <p>In Progress</p>
+        </div>
+      </div>
+      <div class="card resolved" onclick="filterByStatus('Resolved')">
+        <div class="card-icon"><i class="fa fa-check-circle"></i></div>
+        <div class="card-info">
+          <h2 class="counter" data-target="3">0</h2>
+          <p>Resolved</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Complaint Status Overview</h3>
+        <div class="chart-wrap"><canvas id="doughnutChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Monthly Complaints (2024)</h3>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Category Breakdown</h3>
+        <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="recent-section">
+      <h3>Recent Activity</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-dot resolved-dot"></div>
+          <div><p><b>CC1023</b> — Street Light resolved</p><small>2 hours ago</small></div>
+          <span class="status resolved-status">Resolved</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot progress-dot"></div>
+          <div><p><b>CC1024</b> — Garbage Overflow in progress</p><small>5 hours ago</small></div>
+          <span class="status progress-status">In Progress</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot pending-dot"></div>
+          <div><p><b>CC1025</b> — Road Pothole submitted</p><small>1 day ago</small></div>
+          <span class="status pending-status">Pending</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== SUBMIT COMPLAINT SECTION ===================== -->
+  <div id="submit" class="section" style="display:none">
+    <h2 class="section-title">Report a Local Issue</h2>
+
+    <form id="complaintForm" class="complaint-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label><i class="fa fa-heading"></i> Complaint Title</label>
+          <input type="text" id="titleInput" placeholder="e.g. Broken street light near park" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-user"></i> Your Name</label>
+          <input type="text" id="nameInput" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-envelope"></i> Email</label>
+          <input type="email" id="emailInput" placeholder="you@email.com" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa fa-tag"></i> Category</label>
+          <select id="categoryInput">
+            <option>Road Issue</option>
+            <option>Garbage</option>
+            <option>Street Light</option>
+            <option>Water Supply</option>
+            <option>Drainage</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group priority-group">
+          <label><i class="fa fa-flag"></i> Priority</label>
+          <div class="priority-btns">
+            <button type="button" class="prio-btn" data-prio="Low" onclick="setPriority(this)">Low</button>
+            <button type="button" class="prio-btn active" data-prio="Medium" onclick="setPriority(this)">Medium</button>
+            <button type="button" class="prio-btn" data-prio="High" onclick="setPriority(this)">High</button>
+          </div>
+          <input type="hidden" id="priorityInput" value="Medium">
+        </div>
+        <div class="form-group full-width">
+          <label><i class="fa fa-align-left"></i> Description</label>
+          <textarea id="descInput" placeholder="Describe the issue in detail..." required></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label><i class="fa fa-image"></i> Upload Image</label>
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageUpload').click()">
+            <i class="fa fa-cloud-upload-alt"></i>
+            <p>Click to upload or drag & drop</p>
+            <small>PNG, JPG up to 10MB</small>
+          </div>
+          <input type="file" id="imageUpload" accept="image/*" style="display:none">
+          <img id="preview" style="display:none; margin-top:10px; max-width:100%; border-radius:8px;">
+        </div>
+        <div class="form-group full-width">
+          <label><i class="fa fa-map-marker-alt"></i> Select Problem Location</label>
+          <div id="map"></div>
+          <div class="coords-row">
+            <input type="text" id="latitude" placeholder="Latitude" readonly>
+            <input type="text" id="longitude" placeholder="Longitude" readonly>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn"><i class="fa fa-paper-plane"></i> Submit Complaint</button>
+    </form>
+  </div>
+
+  <!-- ===================== MY COMPLAINTS SECTION ===================== -->
+  <div id="complaints" class="section" style="display:none">
+
+    <div class="complaints-header">
+      <h2 class="section-title">My Complaints</h2>
+      <div class="complaints-actions">
+        <div class="search-box">
+          <i class="fa fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search by ID or title..." oninput="searchComplaint()">
+        </div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="filter-btn active" onclick="filterComplaints('all',this)">All</button>
+          <button class="filter-btn" onclick="filterComplaints('Pending',this)">Pending</button>
+          <button class="filter-btn" onclick="filterComplaints('In Progress',this)">In Progress</button>
+          <button class="filter-btn" onclick="filterComplaints('Resolved',this)">Resolved</button>
+        </div>
+        <div class="export-btns">
+          <button onclick="exportCSV()" class="export-btn"><i class="fa fa-file-csv"></i> CSV</button>
+          <button onclick="exportPDF()" class="export-btn"><i class="fa fa-file-pdf"></i> PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="complaints-grid" id="complaintsGrid">
+      <!-- Cards rendered by JS -->
+    </div>
+
+  </div>
+
+  <!-- ===================== PROFILE SECTION ===================== -->
+  <div id="profile" class="section" style="display:none">
+    <h2 class="section-title">My Profile</h2>
+    <div class="profile-card">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="profileAvatar">RK</div>
+        <button class="change-avatar-btn" onclick="document.getElementById('avatarUpload').click()">
+          <i class="fa fa-camera"></i>
+        </button>
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="changeAvatar(this)">
+      </div>
+      <div class="profile-info">
+        <div class="profile-field">
+          <label>Full Name</label>
+          <input type="text" id="profileName" value="Ravi Kumar" onchange="updateProfile()">
+        </div>
+        <div class="profile-field">
+          <label>Email</label>
+          <input type="email" id="profileEmail" value="ravi.kumar@email.com" onchange="updateProfile()">
+        </div>
+        <div class="profile-field">
+          <label>Phone</label>
+          <input type="tel" id="profilePhone" value="+91 98765 43210" onchange="updateProfile()">
+        </div>
+        <div class="profile-field">
+          <label>City</label>
+          <input type="text" id="profileCity" value="Vijayawada" onchange="updateProfile()">
+        </div>
+        <button class="submit-btn" onclick="saveProfile()"><i class="fa fa-save"></i> Save Changes</button>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="p-stat"><h3>12</h3><p>Total Filed</p></div>
+      <div class="p-stat"><h3>3</h3><p>Resolved</p></div>
+      <div class="p-stat"><h3>25%</h3><p>Resolution Rate</p></div>
+      <div class="p-stat"><h3>4.2</h3><p>Avg Response Days</p></div>
+    </div>
+  </div>
 
 </div>
 
-
-<div class="main">
-
-<!-- DASHBOARD -->
-
-<div id="dashboard">
-
-<h1>User Dashboard</h1>
-
-<div class="stats">
-
-<div class="card total">
-<h2>12</h2>
-<p>Total Complaints</p>
+<!-- ===================== TRACKING MODAL ===================== -->
+<div id="trackingModal" class="modal-overlay">
+  <div class="tracking-box">
+    <div class="modal-header">
+      <h2><i class="fa fa-search-location"></i> Complaint Tracking</h2>
+      <span class="close-btn" onclick="closeTracking()"><i class="fa fa-times"></i></span>
+    </div>
+    <div class="modal-body">
+      <div class="track-info-row">
+        <div><label>Complaint ID</label><p id="trackID" class="track-id-text"></p></div>
+        <div><label>Status</label><p class="status-progress" id="trackStatus"></p></div>
+        <div><label>Department</label><p>Municipal Maintenance</p></div>
+        <div><label>Resolution ETA</label><p>48 Hours</p></div>
+      </div>
+      <div class="progress-steps">
+        <div class="step" id="step1"><div class="circle"><i class="fa fa-file-alt"></i></div><span>Submitted</span></div>
+        <div class="step-line"><div id="progressLine" class="fill-line"></div></div>
+        <div class="step" id="step2"><div class="circle"><i class="fa fa-check"></i></div><span>Verified</span></div>
+        <div class="step-line"><div id="progressLine2" class="fill-line"></div></div>
+        <div class="step" id="step3"><div class="circle"><i class="fa fa-tools"></i></div><span>Processing</span></div>
+        <div class="step-line"><div id="progressLine3" class="fill-line"></div></div>
+        <div class="step" id="step4"><div class="circle"><i class="fa fa-flag-checkered"></i></div><span>Resolved</span></div>
+      </div>
+      <div class="official-msg" id="officialMessage"></div>
+    </div>
+  </div>
 </div>
 
-<div class="card pending">
-<h2>4</h2>
-<p>Pending</p>
+<!-- ===================== EDIT MODAL ===================== -->
+<div id="editModal" class="modal-overlay">
+  <div class="tracking-box">
+    <div class="modal-header">
+      <h2><i class="fa fa-edit"></i> Edit Complaint</h2>
+      <span class="close-btn" onclick="closeEdit()"><i class="fa fa-times"></i></span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Title</label><input type="text" id="editTitle"></div>
+      <div class="form-group"><label>Location</label><input type="text" id="editLocation"></div>
+      <div class="form-group"><label>Category</label>
+        <select id="editCategory">
+          <option>Road Issue</option><option>Garbage</option><option>Street Light</option>
+          <option>Water Supply</option><option>Drainage</option><option>Other</option>
+        </select>
+      </div>
+      <input type="hidden" id="editId">
+      <button class="submit-btn" onclick="saveEdit()"><i class="fa fa-save"></i> Save Changes</button>
+    </div>
+  </div>
 </div>
 
-<div class="card progress">
-<h2>5</h2>
-<p>In Progress</p>
-</div>
-
-<div class="card resolved">
-<h2>3</h2>
-<p>Resolved</p>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- SUBMIT COMPLAINT -->
-
-<div id="submit" style="display:none">
-
-<h2>Submit Complaint</h2>
-
-<form id="complaintForm">
-
-<label>Complaint Title</label>
-<input type="text" required>
-
-<label>Name</label>
-<input type="text" id="nameInput" required>
-
-<label>Email</label>
-<input type="email" required>
-
-<label>Category</label>
-<select>
-<option>Road Issue</option>
-<option>Garbage</option>
-<option>Street Light</option>
-</select>
-
-<label>Description</label>
-<textarea required></textarea>
-
-<label>Upload Image</label>
-<input type="file" id="imageUpload">
-
-<img id="preview">
-
-<label>Location</label>
-<div id="map"></div>
-
-<input type="text" id="latitude" placeholder="Latitude" readonly>
-<input type="text" id="longitude" placeholder="Longitude" readonly>
-
-<button type="submit">Submit Complaint</button>
-
-</form>
-
-</div>
-
-
-<!-- MY COMPLAINTS -->
-
-<div id="complaints" style="display:none">
-
-<h2>My Complaints</h2>
-
-<input type="text" id="searchInput" placeholder="Search Complaint ID" onkeyup="searchComplaint()">
-
-<div class="complaints">
-
-<div class="complaint-card">
-
-<p><b>ID:</b> CC1023</p>
-<p>Street Light Not Working</p>
-
-<span class="status progress-status">In Progress</span>
-
-<button>Track</button>
-
-</div>
-
-<div class="complaint-card">
-
-<p><b>ID:</b> CC1024</p>
-<p>Garbage Overflow</p>
-
-<span class="status pending-status">Pending</span>
-
-<button>Track</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script src="user-Dashboard.js"></script>
-
+<script src="user-dashboard.js"></script>
 </body>
 </html>
